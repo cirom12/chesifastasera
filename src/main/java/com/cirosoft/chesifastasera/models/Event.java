@@ -2,19 +2,50 @@ package com.cirosoft.chesifastasera.models;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "events")
 public class Event {
 	
+	@Id
+	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@Column(nullable = false)
 	private String title;
+	
+	@Column(nullable = false)
 	private LocalDate startDate;
+	
 	private LocalDate endDate; // facoltativa: null = evento di un solo giorno
+	
+	@Column(nullable = false)
 	private String city;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private Category category;
+	
+	@Column(nullable = false)
 	private boolean free;
+	
 	private String ticketPrice; // facoltativo se free = true
 	private String time;
+	
+	@Column(length = 2000)
 	private String description;
+	
+	@Column(length = 1000)
 	private String contacts;
+	
 	private String ticketUrl;
 	
 	//Costruttore
@@ -37,7 +68,6 @@ public class Event {
 	//Costruttore vuoto
 	public Event() {}
 
-	
 	
 	public Long getId() {
 		return id;
