@@ -1,7 +1,9 @@
 package com.cirosoft.chesifastasera.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cirosoft.chesifastasera.models.Category;
 import com.cirosoft.chesifastasera.models.Event;
 import com.cirosoft.chesifastasera.services.EventService;
 
@@ -30,8 +34,12 @@ public class EventController {
 	
 
 	@GetMapping()
-	public List<Event> getAll(){
-		return eventService.getAll();
+	public List<Event> getAll(
+			@RequestParam(required = false ) Category category,
+			@RequestParam(required = false ) String city,
+			@RequestParam(required = false ) Boolean free,
+			@RequestParam(required = false ) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+		return eventService.getAll(category, city, free, date);
 	}
 	
 	
