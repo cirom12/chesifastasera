@@ -20,6 +20,8 @@ import com.cirosoft.chesifastasera.models.Category;
 import com.cirosoft.chesifastasera.models.Event;
 import com.cirosoft.chesifastasera.services.EventService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("api/events")
@@ -50,14 +52,14 @@ public class EventController {
 	
 	
 	@PostMapping()
-	public ResponseEntity<Event> add(@RequestBody Event event){ 
+	public ResponseEntity<Event> add(@Valid@RequestBody Event event){ 
 		Event saved = eventService.add(event);
 		return ResponseEntity.status(HttpStatus.CREATED).body(saved);
 	}
 	
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Event> update(@PathVariable Long id, @RequestBody Event event) {
+	public ResponseEntity<Event> update(@PathVariable Long id, @Valid@RequestBody Event event) {
 		return ResponseEntity.of(eventService.update(id, event));
 	}
 

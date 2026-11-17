@@ -10,6 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "events")
@@ -19,17 +23,23 @@ public class Event {
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	
+	@NotBlank(message = "Il titolo è obbligatorio")
+	@Size(max = 255, message = "Il titolo non può superare i 255 caratteri")
 	@Column(nullable = false)
 	private String title;
 	
+	@NotNull(message = "La data di inizio è obbligatoria")
 	@Column(nullable = false)
 	private LocalDate startDate;
 	
 	private LocalDate endDate; // facoltativa: null = evento di un solo giorno
 	
+	@NotBlank(message= "La città è obbligatoria")
 	@Column(nullable = false)
 	private String city;
 	
+	@NotNull(message= "La categoria è obbligatoria")
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Category category;
@@ -40,9 +50,11 @@ public class Event {
 	private String ticketPrice; // facoltativo se free = true
 	private String time;
 	
+	@Size(max = 2000, message = "La descrizone non può superare i 2000 caratteri")
 	@Column(length = 2000)
 	private String description;
 	
+	@Size(max = 1000, message = "I contatti non possono superare i 1000 caratteri")
 	@Column(length = 1000)
 	private String contacts;
 	
@@ -163,6 +175,12 @@ public class Event {
 
 	public void setTicketUrl(String ticketUrl) {
 		this.ticketUrl = ticketUrl;
+	}
+	
+	
+	@AssertTrue(message = "La data di fine non può essere precedente a quella di inizio")
+	private boolean isEndDateValid() {
+		return endDate == null || startDate == null || !endDate.isBefore(startDate);
 	}
 	
 }
