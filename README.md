@@ -33,6 +33,10 @@ L'API risponde su `http://localhost:8080/api/events`.
 | PUT | `/api/events/{id}` | Sostituisce un evento |
 | DELETE | `/api/events/{id}` | Elimina un evento |
 
+## Collezione postman
+Nel file `docs/postman/che-si-fa-stasera.postman_collection.json` trovi richieste pronte per tutti gli endpoint.
+In Postman: **Import** -> seleziona il file. L'indirizzo base è nella variabile `baseUrl`.
+
 ### Filtri (opzionali e combinabili)
 | Parametro | Esempio | Significato |
 |---|---|---|
