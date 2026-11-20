@@ -1,5 +1,5 @@
-# Che si fa stasera? 
-# Un progetto di Maggio Ciro
+# Che si fa stasera?
+## Un progetto di Maggio Ciro
 
 API REST per gli eventi estivi del Gargano e dintorni (sagre, concerti, sport, cultura, feste e gite).
 Progetto backend realizzato con Spring Boot, PostgreSQL e Docker.
@@ -23,6 +23,9 @@ L'API risponde su `http://localhost:8080/api/events`.
 1. Installa PostgreSQL e crea il database `chesifastasera`.
 2. Imposta la variabile d'ambiente `DB_PASSWORD` con la password dell'utente `postgres`.
 3. Avvia l'app: `.\mvnw spring-boot:run`
+
+## Frontend
+Il sito è servito dall'applicazione stessa su `http://localhost:8080` e usa l'API. È scritto in HTML, CSS e JavaScript (moduli ES), senza librerie né build, e si trova in `src/main/resources/static`.
 
 ## Endpoint
 | Metodo | URL | Descrizione |

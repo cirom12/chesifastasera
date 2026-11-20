@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Che si fa stasera? – Eventi del Gargano e dintorni</title>
+  <meta name="description" content="Sagre, concerti, sport, cultura, feste e gite ad Apricena e nei dintorni.">
+  <meta name="theme-color" content="#0f1117">
+  <link rel="icon" href="/img/logo.png">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <a class="skip-link" href="#results">Vai all'elenco degli eventi</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/" aria-label="Che si fa stasera? – torna all'inizio">
+        <img class="brand__logo" src="/img/logo.png" alt="">
+        <span class="brand__name">Che si fa stasera?</span>
+      </a>
+      <p class="site-header__date" id="today-label"></p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="filters" aria-labelledby="filters-title">
+      <h2 class="visually-hidden" id="filters-title">Filtri</h2>
+
+      <div class="field">
+        <label class="field__label" for="search-input">Cerca</label>
+        <input class="input" id="search-input" type="search" placeholder="Titolo, città o descrizione" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="city-select">Città</label>
+        <select class="input" id="city-select">
+          <option value="ALL">Tutte le città</option>
+        </select>
+      </div>
+
+      <div class="field field--wide">
+        <span class="field__label" id="category-label">Categoria</span>
+        <div class="chips" id="category-filters" role="group" aria-labelledby="category-label"></div>
+      </div>
+
+      <div class="field">
+        <span class="field__label" id="price-label">Prezzo</span>
+        <div class="chips" id="price-filters" role="group" aria-labelledby="price-label">
+          <button class="chip" type="button" data-value="ALL" aria-pressed="true">Tutti</button>
+          <button class="chip" type="button" data-value="FREE" aria-pressed="false">Gratis</button>
+          <button class="chip" type="button" data-value="PAID" aria-pressed="false">A pagamento</button>
+        </div>
+      </div>
+        
+      <div class="field">
+       	<label class="field__label" for="day-input">Giorno</label>
+        <div class="date-field">
+        	<input class="input" id="day-input" type="date">
+          	<button class="button button--ghost" type="button" id="clear-day">Tutti i giorni</button>
+        </div>
+      </div>
+
+      <div class="field field--wide filters__options">
+        <label class="checkbox">
+          <input type="checkbox" id="only-favorites">
+          <span id="favorites-label">Solo preferiti</span>
+        </label>
+        <button class="button button--ghost" type="button" id="reset-filters">Azzera i filtri</button>
+      </div>
+    </section>
+
+    <section id="results" aria-labelledby="results-title">
+      <h2 class="results__title" id="results-title">Eventi</h2>
+      <p class="results__count" id="results-count" aria-live="polite"></p>
+      <div id="event-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Date, orari e prezzi possono cambiare: verifica sempre con gli organizzatori.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
