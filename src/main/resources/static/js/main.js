@@ -14,23 +14,27 @@ import {
   setPressed,
 } from './ui.js';
 
+
 const DEFAULT_FILTERS = {
   search: '',
   category: 'ALL',
   price: 'ALL',
   city: 'ALL',
-  day: 'ALL',
-  onlyFavorites: false,
+  day: 'ALL', // 'ALL' or an ISO date (yyyy-mm-dd) picked with the date field
 };
 
 const state = {
   events: [],
   status: 'loading', // 'loading' | 'ready' | 'error'
   favorites: loadFavorites(),
-  ...DEFAULT_FILTERS,
+  onlyFavorites: false, // applied immediately, without pressing "Cerca"
+  draft: { ...DEFAULT_FILTERS }, // what the user is choosing in the form
+  applied: { ...DEFAULT_FILTERS }, // what is actually used to filter the list
 };
 
+
 const refs = {
+  form: document.getElementById('filters-form'),	
   todayLabel: document.getElementById('today-label'),
   search: document.getElementById('search-input'),
   city: document.getElementById('city-select'),
@@ -45,13 +49,9 @@ const refs = {
   list: document.getElementById('event-list'),
 };
 
-function currentFilters(overrides = {}) {
+function currentFilters() {
   return {
-    search: state.search,
-    category: state.category,
-    price: state.price,
-    city: state.city,
-    day: state.day,
+    ...state.applied,
     onlyFavorites: state.onlyFavorites,
     favorites: state.favorites,
   };
@@ -84,12 +84,14 @@ function render() {
       { value: 'ALL', label: TEXT.allCategories },
       ...CATEGORIES.map((category) => ({ value: category.value, label: category.pluralLabel })),
     ],
-    state.category,
-    (value) => updateFilters({ category: value }),
+    state.draft.category,
+	  (value) => {state.draft.category = value;
+	  render();
+	},
   );
   
-  renderCityOptions(refs.city, listCities(state.events), state.city);
-  setPressed(refs.priceFilters, state.price);
+  renderCityOptions(refs.city, listCities(state.events), state.draft.city);
+  setPressed(refs.priceFilters, state.draft.price);
 
   const favoritesCount = state.events.filter((event) => state.favorites.has(event.id)).length;
   refs.favoritesLabel.textContent = TEXT.favoritesOnly(favoritesCount);
@@ -105,17 +107,13 @@ function render() {
     return;
   }
 
-  renderEventList(refs.list, groupByDay(visible, { today, day: state.day }), {
+  renderEventList(refs.list, groupByDay(visible, { today, day: state.applied.day }), {
     today,
     favorites: state.favorites,
     onToggleFavorite: toggleFavorite,
   });
 }
 
-function updateFilters(changes) {
-  Object.assign(state, changes);
-  render();
-}
 
 function toggleFavorite(id) {
   if (state.favorites.has(id)) state.favorites.delete(id);
@@ -125,24 +123,48 @@ function toggleFavorite(id) {
 }
 
 function bindControls() {
-  refs.search.addEventListener('input', (event) => updateFilters({ search: event.target.value }));
-  refs.city.addEventListener('change', (event) => updateFilters({ city: event.target.value }));
+  // These controls only change the draft: nothing is filtered until "Cerca" is pressed.
+  refs.search.addEventListener('input', (event) => {
+    state.draft.search = event.target.value;
+  });
+  refs.city.addEventListener('change', (event) => {
+    state.draft.city = event.target.value;
+  });
   refs.priceFilters.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-value]');
-    if (button) updateFilters({ price: button.dataset.value });
+    if (!button) return;
+    state.draft.price = button.dataset.value;
+    setPressed(refs.priceFilters, state.draft.price);
   });
-  // "change" fires only when a complete, valid date is chosen or the field is cleared.
-  refs.day.addEventListener('change', (event) => updateFilters({ day: event.target.value || 'ALL' }));
+  refs.day.addEventListener('change', (event) => {
+    state.draft.day = event.target.value || 'ALL';
+  });
   refs.clearDay.addEventListener('click', () => {
     refs.day.value = '';
-    updateFilters({ day: 'ALL' });
+    state.draft.day = 'ALL';
   });
-  refs.onlyFavorites.addEventListener('change', (event) => updateFilters({ onlyFavorites: event.target.checked }));
+
+  // "Cerca" (or Enter inside the form) applies the draft.
+  refs.form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    state.applied = { ...state.draft };
+    render();
+  });
+
+  // "Solo preferiti" is applied immediately.
+  refs.onlyFavorites.addEventListener('change', (event) => {
+    state.onlyFavorites = event.target.checked;
+    render();
+  });
+
   refs.reset.addEventListener('click', () => {
     refs.search.value = '';
-		refs.day.value = '';
+    refs.day.value = '';
     refs.onlyFavorites.checked = false;
-    updateFilters({ ...DEFAULT_FILTERS });
+    state.onlyFavorites = false;
+    state.draft = { ...DEFAULT_FILTERS };
+    state.applied = { ...DEFAULT_FILTERS };
+    render();
   });
 }
 

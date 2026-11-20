@@ -25,7 +25,7 @@
   </header>
 
   <main class="container">
-    <section class="filters" aria-labelledby="filters-title">
+    <form class="filters" id="filters-form" aria-labelledby="filters-title">
       <h2 class="visually-hidden" id="filters-title">Filtri</h2>
 
       <div class="field">
@@ -67,9 +67,10 @@
           <input type="checkbox" id="only-favorites">
           <span id="favorites-label">Solo preferiti</span>
         </label>
+        <button class="button button--primary" type="submit">Cerca</button>
         <button class="button button--ghost" type="button" id="reset-filters">Azzera i filtri</button>
       </div>
-    </section>
+    </form>
 
     <section id="results" aria-labelledby="results-title">
       <h2 class="results__title" id="results-title">Eventi</h2>

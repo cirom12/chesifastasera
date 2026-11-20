@@ -2,7 +2,6 @@
 // This makes them easy to reason about and to test.
 
 import { isActiveOn, lastDay } from './dates.js';
-import { eachDay, isActiveOn, lastDay } from './dates.js';
 
 // Lowercase and remove accents, so "citta" finds "Città".
 export function normalize(text) {
