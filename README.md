@@ -1,6 +1,8 @@
 # Che si fa stasera?
 ## Un progetto di Maggio Ciro
 
+![Schermata del sito](docs/screenshot.png)
+
 API REST per gli eventi estivi del Gargano e dintorni (sagre, concerti, sport, cultura, feste e gite).
 Progetto backend realizzato con Spring Boot, PostgreSQL e Docker.
 
