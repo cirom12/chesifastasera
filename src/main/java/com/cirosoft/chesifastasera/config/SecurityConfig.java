@@ -42,6 +42,12 @@ public class SecurityConfig {
 			@Value("${app.admin.username}") String username,
 			@Value("${app.admin.password}") String password,
 			PasswordEncoder passwordEncoder) {
+		
+		
+		if (password.isBlank()) {
+			 throw new IllegalStateException("ADMIN_PASSWORD must not be empty");
+		}
+		
 		UserDetails admin = User.withUsername(username)
 				.password(passwordEncoder.encode(password))
 				.roles("ADMIN")
