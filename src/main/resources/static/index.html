@@ -20,7 +20,6 @@
         <img class="brand__logo" src="/img/logo.png" alt="">
         <span class="brand__name">Che si fa stasera?</span>
       </a>
-      <p class="site-header__date" id="today-label"></p>
     </div>
   </header>
 
@@ -55,11 +54,13 @@
       </div>
         
       <div class="field">
-       	<label class="field__label" for="day-input">Giorno</label>
-        <div class="date-field">
-        	<input class="input" id="day-input" type="date">
-          	<button class="button button--ghost" type="button" id="clear-day">Tutti i giorni</button>
-        </div>
+      	<span class="field__label" id="day-label">Giorno</span>
+      	<div class="chips" id="day-filters" role="group" aria-labelledby="day-label">
+        	<button class="chip" type="button" data-value="TODAY" aria-pressed="true">Oggi</button>
+        	<button class="chip" type="button" data-value="ALL" aria-pressed="false">Tutti i giorni</button>
+      	</div>
+        <label class="visually-hidden" for="day-input">Scegli una data</label>
+      	<input class="input" id="day-input" type="date">
       </div>
 
       <div class="field field--wide filters__options">

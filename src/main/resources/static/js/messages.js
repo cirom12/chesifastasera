@@ -1,7 +1,6 @@
 // Every text shown to the user lives here (Italian).
 
 export const TEXT = {
-  todayLabel: (date) => `Oggi è ${date}`,
   today: 'Oggi',
 
   loading: 'Caricamento degli eventi…',
@@ -11,6 +10,11 @@ export const TEXT = {
 
   noEventsTitle: 'Nessun evento trovato',
   noEventsText: 'Prova a cambiare o ad azzerare i filtri.',
+  noEventsTonightText: 'Prova a cambiare i filtri o scegli «Tutti i giorni» per vedere i prossimi eventi.',
+
+  resultsTitleAll: 'Tutti gli eventi',
+  resultsTitleTonight: (date) => `Eventi di stasera – ${date}`,
+  resultsTitleDay: (date) => `Eventi di ${date}`,
   emptyDatabaseTitle: 'Nessun evento in programma',
   emptyDatabaseText: 'Torna a trovarci presto per scoprire i prossimi eventi.',
 

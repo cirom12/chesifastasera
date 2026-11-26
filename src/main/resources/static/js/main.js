@@ -20,7 +20,7 @@ const DEFAULT_FILTERS = {
   category: 'ALL',
   price: 'ALL',
   city: 'ALL',
-  day: 'ALL', // 'ALL' or an ISO date (yyyy-mm-dd) picked with the date field
+  day: 'TODAY', // 'TODAY', 'ALL' or an ISO date (yyyy-mm-dd) picked with the date field
 };
 
 const state = {
@@ -35,13 +35,13 @@ const state = {
 
 const refs = {
   form: document.getElementById('filters-form'),	
-  todayLabel: document.getElementById('today-label'),
+  title: document.getElementById('results-title'),
   search: document.getElementById('search-input'),
   city: document.getElementById('city-select'),
   categoryFilters: document.getElementById('category-filters'),
   priceFilters: document.getElementById('price-filters'),
   day: document.getElementById('day-input'),
-  clearDay: document.getElementById('clear-day'),
+  dayFilters: document.getElementById('day-filters'),
   onlyFavorites: document.getElementById('only-favorites'),
   favoritesLabel: document.getElementById('favorites-label'),
   reset: document.getElementById('reset-filters'),
@@ -49,15 +49,32 @@ const refs = {
   list: document.getElementById('event-list'),
 };
 
-function currentFilters() {
+// "TODAY" is resolved every time, so the page stays correct even if it is left open past midnight.
+function resolveDay(day, today) {
+  return day === 'TODAY' ? today : day;
+}
+
+function resultsTitle(day, today) {
+  if (day === 'ALL') return TEXT.resultsTitleAll;
+  const date = formatLongDate(day).toLowerCase();
+  return day === today ? TEXT.resultsTitleTonight(date) : TEXT.resultsTitleDay(date);
+}
+
+function currentFilters(day) {
   return {
     ...state.applied,
+    day,
     onlyFavorites: state.onlyFavorites,
     favorites: state.favorites,
   };
 }
 
+
 function render() {
+  const today = todayIso();
+  const appliedDay = resolveDay(state.applied.day, today);
+  refs.title.textContent = resultsTitle(appliedDay, today);
+
   if (state.status === 'loading') {
     refs.count.textContent = TEXT.loading;
     return;
@@ -74,10 +91,9 @@ function render() {
     return;
   }
 
-  const today = todayIso();
+  const visible = sortEvents(filterEvents(state.events, currentFilters(appliedDay), today));
 
-  const visible = sortEvents(filterEvents(state.events, currentFilters(), today));
-
+  // Form controls show the draft; the list below shows the applied filters.
   renderChips(
     refs.categoryFilters,
     [
@@ -85,13 +101,14 @@ function render() {
       ...CATEGORIES.map((category) => ({ value: category.value, label: category.pluralLabel })),
     ],
     state.draft.category,
-	  (value) => {state.draft.category = value;
-	  render();
-	},
+    (value) => {
+      state.draft.category = value;
+      render();
+    },
   );
-  
   renderCityOptions(refs.city, listCities(state.events), state.draft.city);
   setPressed(refs.priceFilters, state.draft.price);
+  setPressed(refs.dayFilters, state.draft.day);
 
   const favoritesCount = state.events.filter((event) => state.favorites.has(event.id)).length;
   refs.favoritesLabel.textContent = TEXT.favoritesOnly(favoritesCount);
@@ -102,12 +119,16 @@ function render() {
     const isEmptyDatabase = state.events.length === 0;
     renderMessage(refs.list, {
       title: isEmptyDatabase ? TEXT.emptyDatabaseTitle : TEXT.noEventsTitle,
-      text: isEmptyDatabase ? TEXT.emptyDatabaseText : TEXT.noEventsText,
+      text: isEmptyDatabase
+        ? TEXT.emptyDatabaseText
+        : appliedDay === today
+          ? TEXT.noEventsTonightText
+          : TEXT.noEventsText,
     });
     return;
   }
 
-  renderEventList(refs.list, groupByDay(visible, { today, day: state.applied.day }), {
+  renderEventList(refs.list, groupByDay(visible, { today, day: appliedDay }), {
     today,
     favorites: state.favorites,
     onToggleFavorite: toggleFavorite,
@@ -136,12 +157,18 @@ function bindControls() {
     state.draft.price = button.dataset.value;
     setPressed(refs.priceFilters, state.draft.price);
   });
-  refs.day.addEventListener('change', (event) => {
-    state.draft.day = event.target.value || 'ALL';
-  });
-  refs.clearDay.addEventListener('click', () => {
+  
+  refs.dayFilters.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-value]');
+    if (!button) return;
     refs.day.value = '';
-    state.draft.day = 'ALL';
+    state.draft.day = button.dataset.value;
+    setPressed(refs.dayFilters, state.draft.day);
+  });
+  // "change" fires only when a complete, valid date is chosen or the field is cleared.
+  refs.day.addEventListener('change', (event) => {
+    state.draft.day = event.target.value || DEFAULT_FILTERS.day;
+    setPressed(refs.dayFilters, state.draft.day);
   });
 
   // "Cerca" (or Enter inside the form) applies the draft.
@@ -181,6 +208,5 @@ async function loadEvents() {
   render();
 }
 
-refs.todayLabel.textContent = TEXT.todayLabel(formatLongDate(todayIso()).toLowerCase());
 bindControls();
 loadEvents();
