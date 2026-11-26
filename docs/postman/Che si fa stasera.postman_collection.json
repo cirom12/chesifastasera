@@ -226,6 +226,10 @@
     {
       "key": "baseUrl",
       "value": ""
+    },
+    {
+      "key": "adminUser",
+      "value": ""
     }
   ]
 }

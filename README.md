@@ -39,6 +39,8 @@ Il sito è servito dall'applicazione stessa su `http://localhost:8080` e usa l'A
 ## Collezione postman
 Nel file `docs/postman/che-si-fa-stasera.postman_collection.json` trovi richieste pronte per tutti gli endpoint.
 In Postman: **Import** -> seleziona il file. L'indirizzo base è nella variabile `baseUrl`.
+L'utente è nella variabile `adminUser`
+La password va definita in un *Environment* di Postman con una variabile `adminPassword` (non è inclusa nel file esportato).
 
 ### Filtri (opzionali e combinabili)
 | Parametro | Esempio | Significato |
